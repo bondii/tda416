@@ -70,6 +70,7 @@ public class MySqrt {
         }
     }
 
+    // Help method for recursion
     public static double mySqrtRecurseCalc(double x, double epsilon, double yMin, double yMax) {
         double yMid = (yMax+yMin)/2;
         double ySquare = yMid * yMid;

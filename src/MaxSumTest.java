@@ -106,7 +106,7 @@ public class MaxSumTest {
 		int maxSizeOfArray = 5000;  // make as large as possible
 		// nbr of times that MaxSum.maxSubSumx is called
 		// (one call is so fast that you don't get reliable information)
-		int nbrOfTests = 2000; // experiment, minimum 2000
+		int nbrOfTests = 100000; // experiment, minimum 2000
 		// it takes very long to run slow algorithms at big arrays
 		// so the slow algorithms are not run above these limits
 		// make them as large as possible but balance with size of nbrOfTests
