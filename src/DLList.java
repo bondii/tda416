@@ -16,11 +16,11 @@ public class DLList<E> {
     }
 
     public Node getNext() {
-      // TODO
+      return next;
     }
 
     public Node getPrev() {
-      // TODO
+      return prev;
     }
   }
   
@@ -36,7 +36,17 @@ public class DLList<E> {
    * @return    the node holding the added element
    */
   public Node addFirst(E e) {
-      // TODO
+      Node node = new Node(e);
+
+      if (last == null) {
+          first = node;
+          last = node;
+      } else {
+          node.next = first;
+          first = node;
+      }
+
+      return node;
   }
 
   /** inserts an element at then end of the list
@@ -44,21 +54,31 @@ public class DLList<E> {
    * @return    the node holding the added element
    */
   public Node addLast(E e) {
-      // TODO
+      Node node = new Node(e);
+
+      if (last == null) {
+          first = node;
+          last = node;
+      } else {
+          node.prev = last;
+          last = node;
+      }
+
+      return node;
   }
   
   /**
    * @return    the node of the list's first element, null if list is empty
    */
   public Node getFirst() {
-      // TODO
+      return first;
   }
   
   /**
    * @return    the node of the list's last element, null if list is empty
    */
   public Node getLast() {
-      // TODO
+      return last;
   }
   
   /** inserts a new element after a specified node
@@ -67,7 +87,14 @@ public class DLList<E> {
     * @return    the node holding the inserted element
     */
   public Node insertAfter(E e, Node l) {
-      // TODO
+      Node node = new Node(e);
+
+      node.next = l.next;
+      node.prev = l;
+      l.next.prev = node;
+      l.next = node;
+
+      return node;
   }
 
   /** inserts a new element before a specified node
@@ -76,13 +103,22 @@ public class DLList<E> {
     * @return    the node holding the inserted element
     */
   public Node insertBefore(E e, Node l) {
-      // TODO
+      Node node = new Node(e);
+
+      node.next = l;
+      node.prev = l.prev;
+      l.prev.next = node;
+      l.prev = node;
+
+      return node;
   }
 
   /** removes an element
     * @param l   then node containing the element that will be removed, must be non-null and a node belonging to this list
     */
   public void remove(Node l) {
-      // TODO
+      Node temp = l.prev;
+      l.prev.next = l.next;
+      l.next.prev = temp;
   }
 }
