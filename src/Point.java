@@ -1,7 +1,7 @@
 /**
  * Created by Bondi on 2016-02-02.
  */
-public class Point {
+public class Point implements Comparable {
     /** The contents of the node is public */
     private double x, y, val;
 
@@ -42,5 +42,11 @@ public class Point {
 
     public void setVal(double val) {
         this.val = val;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        double diff = (this.getVal() - ((Point) o).getVal());
+        return (diff == 0 ? 0 : ( diff >= 0 ? 1 : -1));
     }
 }

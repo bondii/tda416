@@ -1,7 +1,7 @@
 /** Doubly-linked list with user access to nodes
  */
 public class DLList<E> {
-  public class Node {
+  public class Node implements Comparable {
     /** The contents of the node is public */
     public E elt;
 
@@ -22,6 +22,11 @@ public class DLList<E> {
     public Node getPrev() {
       return prev;
     }
+
+      @Override
+      public int compareTo(Object o) {
+          return ((Comparable) this.elt).compareTo(((Node) o).elt);
+      }
   }
   
   /** first and last nodes in list, null when list is empty */
@@ -42,6 +47,7 @@ public class DLList<E> {
           first = node;
           last = node;
       } else {
+          first.prev = node;
           node.next = first;
           first = node;
       }
@@ -60,6 +66,7 @@ public class DLList<E> {
           first = node;
           last = node;
       } else {
+          last.next = node;
           node.prev = last;
           last = node;
       }
