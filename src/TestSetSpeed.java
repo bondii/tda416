@@ -2,7 +2,7 @@ import java.util.Random;
 
 class TestSetSpeed {
  public static void main(String[] args) {
-
+/*
   
   final int implnumber = Integer.parseInt(args[0]);
 
@@ -54,5 +54,6 @@ class TestSetSpeed {
   System.out.println("time: " + (double)(endTime - startTime) / 1000.0 + "s");
   System.out.println("operations: " + ops);
   System.out.println("time/operation: " + (double)(endTime - startTime) * 1e6 / (double)ops + "ns");
+ */
  }
 }
