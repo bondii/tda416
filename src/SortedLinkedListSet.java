@@ -37,7 +37,9 @@ public class SortedLinkedListSet implements SimpleSet {
     int size;
 
     public SortedLinkedListSet() {
-        first = last = null;
+        first = null;
+        last = null;
+        size = 0;
     }
 
     @Override
@@ -47,35 +49,45 @@ public class SortedLinkedListSet implements SimpleSet {
 
     @Override
     public boolean add(Comparable x) {
+        //System.out.println("running add");
         Node node = new Node(x);
         if (first == null) {
+            //System.out.println("FIRST NULL" + x);
             first = node;
+            last = node;
+            size++;
+            return true;
         } else {
+            //System.out.println("First NOT null " + x);
             Node iterNode = first;
 
-            while (true) {
-                if (node.equals(iterNode)) {
+            while (iterNode != null) {
+                //System.out.println("Node: " + node.elt + " iterNode: " + iterNode.elt);
+                if (node.elt.equals(iterNode.elt)) {
+                    //System.out.println("Node existed, returning false");
                     return false;
                 } else if (node.compareTo(iterNode) < 0) {
+                    //System.out.println("breaking");
                     break;
                 }
 
-                if (iterNode.getNext()!=null) { //ugly solution, but hey it works
-                    iterNode = iterNode.getNext();
-                } else {
-                    break;
-                }
+                iterNode = iterNode.getNext();
             }
 
 
             node.next = iterNode;
-            iterNode.prev = node;
-
-            if (iterNode.getPrev() == null) {
-                first = node;
-            } else {
+            if (iterNode != null) {
                 node.prev = iterNode.getPrev();
-                iterNode.getPrev().next = node;
+                if (iterNode.getPrev() != null) {
+                    iterNode.getPrev().next = node;
+                } else {
+                    first = node;
+                }
+                iterNode.prev = node;
+            } else {
+                last.next = node;
+                node.prev = last;
+                last = node;
             }
 
         }
@@ -90,10 +102,21 @@ public class SortedLinkedListSet implements SimpleSet {
         Node iterNode = first;
 
         while (iterNode != null) {
-            if (iterNode.equals(node)) {
-                iterNode.getPrev().next = iterNode.getNext();
-                iterNode.getNext().prev = iterNode.getPrev();
+            if (iterNode.elt.equals(node.elt)) {
+                if (iterNode.getPrev() != null) {
+                    iterNode.getPrev().next = iterNode.getNext();
+                } else {
+                    first = iterNode.getNext();
+                    iterNode.prev = null;
+                }
+                if (iterNode.getNext() != null) {
+                    iterNode.getNext().prev = iterNode.getPrev();
+                } else {
+                    last = iterNode.getPrev();
+                    iterNode.next = null;
+                }
 
+                size--;
                 return true;
             }
             iterNode = iterNode.getNext();
@@ -107,10 +130,13 @@ public class SortedLinkedListSet implements SimpleSet {
         Node node = new Node(x);
         Node iterNode = first;
 
+        //System.out.println("Testing contains for " + x);
         while (iterNode != null) {
-            if (node.equals(iterNode)) {
+            if (node.elt.equals(iterNode.elt)) {
                 return true;
             }
+            //System.out.println(iterNode.elt);
+            iterNode = iterNode.getNext();
         }
 
         return false;
