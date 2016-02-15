@@ -1,4 +1,3 @@
-import java.awt.geom.Point2D;
 import java.util.PriorityQueue;
 
 //import DLList.Node; // Why does this not work?
@@ -56,9 +55,9 @@ public class Lab2b {
     }
 
     public static double calcVal(Point p, Point l, Point r) {
-        return Point2D.distance(l.getX(), l.getY(),p.getX(), p.getY()) +
-                Point2D.distance(p.getX(), p.getY(), r.getX(), r.getY()) -
-                Point2D.distance(l.getX(), l.getY(), r.getX(), r.getY());
+        return Math.sqrt(Math.pow(l.getX()-p.getX(), 2) + Math.pow(l.getY()-p.getY(), 2)) +
+                Math.sqrt(Math.pow(p.getX()-r.getX(), 2) + Math.pow(p.getY()-r.getY(), 2)) -
+                Math.sqrt(Math.pow(l.getX()-r.getX(), 2) + Math.pow(l.getY()-r.getY(), 2));
     }
 }
 
