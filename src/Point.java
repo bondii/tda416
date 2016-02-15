@@ -49,4 +49,8 @@ public class Point implements Comparable {
         double diff = (this.getVal() - ((Point) o).getVal());
         return (diff == 0 ? 0 : ( diff >= 0 ? 1 : -1));
     }
+
+    public static void setVal(Object p, double value) {
+        ((Point) p).setVal(value);
+    }
 }

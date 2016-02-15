@@ -19,8 +19,8 @@ public class Lab2b {
         node = node.getNext(); // skipping first node since it should never be removed
 
         while (node.getNext() != null) { // up until second last node because it should never be removed
-            double newDist = calcVal((Point) node.elt, (Point) node.getPrev().elt, (Point) node.getNext().elt);
-            ((Point) node.elt).setVal(newDist);
+            double newDist = calcVal(node.elt, node.getPrev().elt, node.getNext().elt);
+            Point.setVal(node.elt, newDist);
             queue.add(node); // adding Point to priorityqueue
             node = node.getNext();
         }
@@ -30,12 +30,12 @@ public class Lab2b {
 
             if (temp.getPrev().getPrev() != null) {
                 queue.remove(temp.getPrev()); // removing from queue and then adding again, in order to update new val
-                ((Point) temp.getPrev().elt).setVal(calcVal((Point) temp.getPrev().elt, (Point) temp.getPrev().getPrev().elt, (Point) temp.getNext().elt));
+                Point.setVal(temp.getPrev().elt, calcVal(temp.getPrev().elt, temp.getPrev().getPrev().elt, temp.getNext().elt));
                 queue.add(temp.getPrev());
             }
             if (temp.getNext().getNext() != null) {
                 queue.remove(temp.getNext()); // removing from queue and then adding again, in order to update new val
-                ((Point) temp.getNext().elt).setVal(calcVal((Point) temp.getNext().elt, (Point) temp.getPrev().elt, (Point) temp.getNext().getNext().elt));
+                Point.setVal(temp.getNext().elt, calcVal(temp.getNext().elt, temp.getPrev().elt, temp.getNext().getNext().elt));
                 queue.add(temp.getNext());
             }
 
@@ -52,6 +52,10 @@ public class Lab2b {
         }
 
         return newArray;
+    }
+
+    public static double calcVal(Object p, Object l, Object r) {
+        return calcVal((Point) p, (Point) l, (Point) r);
     }
 
     public static double calcVal(Point p, Point l, Point r) {
