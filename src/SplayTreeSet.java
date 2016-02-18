@@ -105,34 +105,32 @@ public class SplayTreeSet implements SimpleSet {
                     int leftGen = 1;
                     int rightGen = 1;
 
-                    Node focus = from.getLeft();
+                    Node current = focus.getLeft();
 
-                    while (focus.getRight() != null) {
-
+                    while (current.getRight().getRight() != null) {
                         leftGen++;
-                        focus = focus.getRight();
+                        current = current.getRight();
                     }
-                    newNode = focus;
 
-                    focus = from.getRight();
+                    Node parent = current;
+                    newNode = current.getRight();
+                    current = focus.getRight();
 
-                    while (focus.getLeft() != null) {
+                    while (current.getLeft().getLeft() != null) {
                         rightGen++;
-                        focus = focus.getLeft();
+                        current = current.getLeft();
                     }
 
                     if (rightGen < leftGen) {
-                        newNode = focus;
-                        focus = newNode.getRight();
+                        current = newNode.getRight();
+                        parent.left = current;
                     } else {
-                        focus = newNode.getLeft();
+                        current = newNode.getLeft();
+                        parent.right = current;
                     }
-                }
+                    newNode.left = focus.getLeft();
+                    newNode.right = focus.getRight();
 
-                if (focus.getLeft().equals(child)) {
-                    focus.left = newNode;
-                } else {
-                    focus.right = newNode;
                 }
 
                 size--;
@@ -145,11 +143,47 @@ public class SplayTreeSet implements SimpleSet {
         return false;
     }
 
-    private Node findReplacement(Node from) {
-        Node newNode;
+    private Node splay(Node node) {
 
 
-        return newNode;
+        return null;
+    }
+
+    private Node zig(Node parent, Boolean rightChild) {
+        Node newRoot;
+        if (rightChild) {
+            newRoot = parent.getRight();
+            parent.right = newRoot.getLeft();
+            newRoot.left = parent;
+        } else {
+            newRoot = parent.getLeft();
+            parent.left = newRoot.getRight();
+            newRoot.right = parent;
+        }
+
+        return newRoot;
+    }
+
+    // Runs two zigs after each other and returns the new "root".
+    private Node zigZig(Node grandParent, Boolean rightChild) {
+        return zig(zig(grandParent, rightChild), rightChild);
+    }
+
+    private Node zigZag(Node grandParent, Boolean rightChild) {
+        Node child;
+        if (rightChild) {
+            child = grandParent.getRight().getLeft();
+            zig(grandParent.getRight(), false);
+            grandParent.right = child;
+            zig(grandParent, true);
+        } else {
+            child = grandParent.getLeft().getRight();
+            zig(grandParent.getLeft(), true);
+            grandParent.left = child;
+            zig(grandParent, false);
+        }
+
+        return child;
     }
 
     private Node moveTowards(Node from, Node to) {
