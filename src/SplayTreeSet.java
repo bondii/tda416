@@ -10,7 +10,7 @@ public class SplayTreeSet implements SimpleSet {
         /** The contents of the node is public */
         public Comparable elt;
 
-        protected Node left, right;
+        protected Node left, right, parent;
 
         Node() {
             this(null);
@@ -27,6 +27,10 @@ public class SplayTreeSet implements SimpleSet {
 
         public Node getRight() {
             return right;
+        }
+
+        public Node getParent() {
+            return parent;
         }
 
         @Override
@@ -49,11 +53,11 @@ public class SplayTreeSet implements SimpleSet {
     public boolean add(Comparable x) {
         Node newNode = new Node(x);
 
+        Node focus = null;
         if (root == null) {
             root = newNode;
         } else {
-            Node focus = root;
-
+            focus = root;
             while (true) {
                 int diff = focus.compareTo(newNode);
                 if (focus.equals(newNode)) {
@@ -76,7 +80,9 @@ public class SplayTreeSet implements SimpleSet {
             }
         }
 
+        newNode.parent = focus;
         size++;
+        splay(newNode);
         return true;
     }
 
@@ -85,7 +91,61 @@ public class SplayTreeSet implements SimpleSet {
         Node compNode = new Node(x);
         Node focus = root;
 
-        // HANTERA FALLET compNode == root *****************************
+        if (!compNode.equals(root)) {
+            if (!splay(compNode)) {
+                return false;
+            }
+            //Node to be removed is now root
+        }
+
+        //REMOVING ROOT
+        if (focus.getLeft() == null) {
+            root = focus.getRight();
+        } else if (focus.getRight() == null) {
+            root = focus.getLeft();
+        } else {
+            focus = focus.getLeft();
+            while (focus.getRight() != null) {
+                focus = focus.getRight();
+            }
+            // Now focus is the last node
+
+            focus.right = compNode.getRight();
+            splay(focus);
+            // focus should now be root
+        }
+
+        root.parent = null;
+        size--;
+        return true;
+    }
+
+    //@Override
+    public boolean FIRSTremove(Comparable x) {
+        Node compNode = new Node(x);
+        Node focus = root;
+
+        if (compNode.equals(root)) {
+            if (focus.getLeft() == null) {
+                root = focus.getRight();
+            } else if (focus.getRight() == null) {
+                root = focus.getLeft();
+            } else {
+                focus = focus.getLeft();
+                while (focus.getRight() != null) {
+                    focus = focus.getRight();
+                }
+                // Now focus is the last node
+
+                focus.right = compNode.getRight();
+                splay(focus);
+                // focus should now be root
+            }
+
+            root.parent = null;
+            size--;
+            return true;
+        }
 
         while (focus != null) {
             if (focus.getLeft().equals(compNode) || focus.getRight().equals(compNode)) {
@@ -93,7 +153,7 @@ public class SplayTreeSet implements SimpleSet {
                 Node newNode;
 
                 if (child.getLeft() == null) {
-                    if (child.getRight() == null) {
+                    if (child.getRight() == null) { // no children
                         newNode = null;
                     } else {
                         newNode = child.getRight();
@@ -143,13 +203,54 @@ public class SplayTreeSet implements SimpleSet {
         return false;
     }
 
-    private Node splay(Node node) {
+    private boolean splay(Node node) {
+        while (node.getParent() != null && node.getParent().getParent() != null) {
+            if (node.compareTo(node.getParent()) > 0) {
+                if (node.compareTo(node.getParent().getParent()) > 0) {
+                    //zigZig(node.getParent().getParent(), true);
+                    zigZig(node, true);
+                } else {
+                    //zigZag(node.getParent().getParent(), false);
+                    zigZag(node, false);
+                }
+            } else {
+                if (node.compareTo(node.getParent().getParent()) < 0) {
+                    //zigZig(node.getParent().getParent(), false);
+                    zigZig(node, false);
+                } else {
+                    //zigZag(node.getParent().getParent(), true);
+                    zigZag(node, true);
+                }
+            }
+        }
 
+        if (node.getParent() != null) {
+            //zig(node.getParent(), node.compareTo(node.getParent()) > 0);
+            zig(node);
+        }
 
-        return null;
+        root = node;
+        return true;
     }
 
-    private Node zig(Node parent, Boolean rightChild) {
+    private void zig(Node node) {
+        Node temp;
+        if (node.compareTo(node.getParent()) > 0) {
+            temp = node.getLeft();
+            node.left = node.getParent();
+            node.getParent().right = temp;
+        } else {
+            temp = node.getRight();
+            node.right = node.getParent();
+            node.getParent().left = temp;
+        }
+
+        temp = node.getParent();
+        node.parent = temp.getParent();
+        temp.parent = node;
+    }
+
+    private Node GAMMALzig(Node parent, Boolean rightChild) {
         Node newRoot;
         if (rightChild) {
             newRoot = parent.getRight();
@@ -164,9 +265,10 @@ public class SplayTreeSet implements SimpleSet {
         return newRoot;
     }
 
-    // Runs two zigs after each other and returns the new "root".
-    private Node zigZig(Node grandParent, Boolean rightChild) {
-        return zig(zig(grandParent, rightChild), rightChild);
+    // Runs two zigs after each other.
+    private void zigZig(Node node) {
+        zig(node.getParent());
+        zig(node);
     }
 
     private Node zigZag(Node grandParent, Boolean rightChild) {
@@ -187,12 +289,7 @@ public class SplayTreeSet implements SimpleSet {
     }
 
     private Node moveTowards(Node from, Node to) {
-        int diff = from.compareTo(to);
-        if (diff > 0) {
-            return from.getLeft();
-        } else {
-            return from.getRight();
-        }
+        return from.compareTo(to) > 0 ? from.getLeft() : from.getRight();
     }
 
     @Override
