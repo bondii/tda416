@@ -2,7 +2,7 @@
 /**
  * Created by Bondi on 2016-02-09.
  */
-public class SortedLinkedListSet implements SimpleSet {
+public class SortedLinkedListSet<Integer> implements SimpleSet {
     public class Node implements Comparable {
         /** The contents of the node is public */
         public Comparable elt;

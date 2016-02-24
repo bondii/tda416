@@ -6,10 +6,12 @@ import java.util.TreeSet;
 public class TestSetCorrectness {
 
     public static void main(String[] args) {//int n1, int n2, int n3, int n4) {
-        int n1 = 1;
-        int n2 = 10000;
+        int n1 = 0;
+        int n2 = 100000; //tests
         int n3 = 100;
         int n4 = 20;
+
+        boolean testing = false;
 
         System.out.println("Starting tests");
         for (int i = n2; i != 0; i--) {
@@ -28,40 +30,40 @@ public class TestSetCorrectness {
                     */
 
                 // slumpa vilket test
-                //System.out.println("New single test, number " + j);
+                if (testing) {
+                    //System.out.println("New single test, number " + j);
+                }
+
                 int rnd = (int) (Math.random() * 4);
                 if (rnd == 0) {
-                    //System.out.println("Testing size");
                     int refSize = referenceSet.size();
                     int testSize = testSet.size();
-                    if (refSize != testSize) {
+                    if (testing || refSize != testSize) {
+                        System.out.println("Testing size");
                         error("RefSize: " + refSize + " TestSize: " + testSize);
                     }
                 } else if (rnd == 1) {
                     int index = (int) (Math.random() * n4);
-
-                    //System.out.println("testing add");
                     boolean refAdd = referenceSet.add(index);
                     boolean testAdd = testSet.add(index);
-                    if (refAdd != testAdd) {
+                    if (testing || refAdd != testAdd) {
+                        System.out.println("testing add");
                         error("Number: " + index + " RefAdded: " + refAdd + " TestAdded: " + testAdd);
                     }
                 } else if (rnd == 2) {
                     int index = (int) (Math.random() * n4);
-
-                    //System.out.println("testing remove");
                     boolean refRem = referenceSet.remove(index);
                     boolean testRem = testSet.remove(index);
-                    if (refRem != testRem) {
+                    if (testing || refRem != testRem) {
+                        System.out.println("testing remove");
                         error("Number: " + index + " RefRemoved: " + refRem + " TestRemoved: " + testRem);
                     }
                 } else {
                     int index = (int) (Math.random() * n4);
-
-                    //System.out.println("testing contains");
                     boolean refCon = referenceSet.contains(index);
                     boolean testCon = testSet.contains(index);
-                    if (refCon != testCon) {
+                    if (testing || refCon != testCon) {
+                        System.out.println("testing contains");
                         error("Number: " + index + " RefContains: " + refCon + " TestContains: " + testCon);
                     }
                 }

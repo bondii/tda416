@@ -2,58 +2,60 @@ import java.util.Random;
 
 class TestSetSpeed {
  public static void main(String[] args) {
-/*
-  
-  final int implnumber = Integer.parseInt(args[0]);
+     for (int P = 1; P <= 10; P++) {
+         String setType = "1";
+         final int size = setType == "1" ? 100*P : 1000*P; //Integer.parseInt(args[1]);
 
-  SimpleSet<Integer> set = 
-   implnumber == 1 ? new SortedLinkedListSet<Integer>() : new SplayTreeSet<Integer>();
+         final int implnumber = Integer.parseInt(setType);//args[0]);
 
-  final int size = Integer.parseInt(args[1]);
+         SimpleSet<Integer> set =
+                 implnumber == 1 ? new SortedLinkedListSet<Integer>() : new SplayTreeSet<Integer>();
 
-  final int bound = 2 * size;
 
-  Random rand = new Random();
+         final int bound = 2 * size;
 
-  while (set.size() < size) {
-   set.add(new Integer(rand.nextInt(bound)));
-  }
+         Random rand = new Random();
 
-  System.out.println("Measuring speed of " + (implnumber == 1 ? "SortedLinkedListSet" : "SplayTreeSet"));
-  System.out.println("This will take 10-20 seconds...");
+         while (set.size() < size) {
+             set.add(new Integer(rand.nextInt(bound)));
+         }
 
-  long ops = 0;
-  long startTime = System.currentTimeMillis();
-  long niter = 1;
-  long endTime = startTime;
+         //System.out.println("Measuring speed of " + (implnumber == 1 ? "SortedLinkedListSet" : "SplayTreeSet"));
+         //System.out.println("This will take 10-20 seconds...");
 
-  while (endTime - startTime <= 10000) {
-   for (long i = 0; i < niter; i++) {
-    set.contains(new Integer(rand.nextInt(bound)));
-    set.contains(new Integer(rand.nextInt(bound)));
-    ops += 2;
+         long ops = 0;
+         long startTime = System.currentTimeMillis();
+         long niter = 1;
+         long endTime = startTime;
 
-    boolean done = false;
-    while (!done) {
-     done = set.add(new Integer(rand.nextInt(bound)));
-     ops++;
-    }
-    
-    done = false;
-    while (!done) {
-     done = set.remove(new Integer(rand.nextInt(bound)));
-     ops++;
-    }
-   }
+         while (endTime - startTime <= 10000) {
+             for (long i = 0; i < niter; i++) {
+                 set.contains(new Integer(rand.nextInt(bound)));
+                 set.contains(new Integer(rand.nextInt(bound)));
+                 ops += 2;
 
-   endTime = System.currentTimeMillis();
-   
-   niter *= 2;
-  }
-  
-  System.out.println("time: " + (double)(endTime - startTime) / 1000.0 + "s");
-  System.out.println("operations: " + ops);
-  System.out.println("time/operation: " + (double)(endTime - startTime) * 1e6 / (double)ops + "ns");
- */
+                 boolean done = false;
+                 while (!done) {
+                     done = set.add(new Integer(rand.nextInt(bound)));
+                     ops++;
+                 }
+
+                 done = false;
+                 while (!done) {
+                     done = set.remove(new Integer(rand.nextInt(bound)));
+                     ops++;
+                 }
+             }
+
+             endTime = System.currentTimeMillis();
+
+             niter *= 2;
+         }
+
+         //System.out.println("time: " + (double) (endTime - startTime) / 1000.0 + "s");
+         //System.out.println("operations: " + ops);
+         //"time/operation: " +
+         System.out.println( (double) (endTime - startTime) * 1e6 / (double) ops );//+ "ns");
+     }
  }
 }
