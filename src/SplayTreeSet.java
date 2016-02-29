@@ -114,34 +114,28 @@ public class SplayTreeSet<Integer> implements SimpleSet {
                     return false;
                 }
             }
-            //Node to be removed is now root
-            removeNode = root;
-            Node focus = root;
+            //Node to be removed is now root since contains uses splay
 
             //REMOVING ROOT
-            if (focus.getLeft() == null) {
-                root = focus.getRight();
-            } else if (focus.getRight() == null) {
-                root = focus.getLeft();
+            if (root.getLeft() == null) {
+                root = root.getRight();
+            } else if (root.getRight() == null) {
+                root = root.getLeft();
             } else {
-                focus = focus.getLeft();
+                Node left = root.getLeft();
+                Node right = root.getRight();
+                left.parent = null;
+                root = left;
+
+
+                Node focus = left;
                 while (focus.getRight() != null) {
                     focus = focus.getRight();
                 }
-                // Now focus is the last node
-
-                focus.right = removeNode.getRight();
-                if (removeNode.getRight() != null) {
-                    removeNode.getRight().parent = focus;
-                    root = removeNode.getLeft();
-                }
-
-                removeNode.getLeft().parent = null;
-                root = removeNode.getLeft();
-
-
-                contains(focus);
-                // focus should now be root
+                // Now focus is the biggest node in left
+                splay(focus);
+                root.right = right;
+                right.parent = root;
             }
 
             root.parent = null;
