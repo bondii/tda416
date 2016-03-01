@@ -3,7 +3,7 @@ import java.util.Random;
 class TestSetSpeed {
  public static void main(String[] args) {
      for (int P = 1; P <= 10; P++) {
-         String setType = "1";
+         String setType = "0";
          final int size = setType == "1" ? 100*P : 1000*P; //Integer.parseInt(args[1]);
 
          final int implnumber = Integer.parseInt(setType);//args[0]);

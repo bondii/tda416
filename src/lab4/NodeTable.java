@@ -1,3 +1,7 @@
+package lab4;
+
+import lab4.NodeObject;
+
 import java.util.*;
 import java.text.Collator;
 /*
@@ -5,7 +9,7 @@ import java.text.Collator;
 * @author Bror Bjerner, rewritten by E Holmström 2011, added reallocate
 */
 
-public class NodeTable <NO extends NodeObject>{ 
+public class NodeTable <NO extends NodeObject>{
 	/** This structure maps between a name and a NodeObject */
 	private TreeMap<String, NO>  fromName; 
 	/** This structure maps between an node number and a NodeObject */

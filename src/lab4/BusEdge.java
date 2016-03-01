@@ -1,3 +1,6 @@
+package lab4;
+
+import lab4.Edge;
 
 /**
 * Extends an Edge with a weight and a name for the bus line.
