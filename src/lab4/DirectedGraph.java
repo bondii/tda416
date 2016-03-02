@@ -4,6 +4,8 @@ import java.util.*;
 
 public class DirectedGraph<E extends Edge> {
 
+    // We have changed the x-coordinate for Kålltorp and Torp from 280 to 281, 279 so it won't look like a cycle
+
     private NodeTable nodes;
     private ArrayList<E> edges;
 
@@ -13,7 +15,9 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public void addEdge(E e) {
-		edges.add(e);
+		if (!edges.contains(e)) {
+            edges.add(e);
+        }
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {
@@ -77,7 +81,56 @@ public class DirectedGraph<E extends Edge> {
     }
 		
 	public Iterator<E> minimumSpanningTree() {
-		return null;
+        // Skapa ett fält cc som för varje nod innehåller en egen tom lista (som skall innehålla bågar så småningom)
+        // (dvs varje nod är i en egen komponent)
+        ArrayList<ArrayList<E>> cc = new ArrayList<ArrayList<E>>();
+
+        // Lägg in alla bågar i en prioritetskö
+        ArrayList<E> pq = new ArrayList<E>();
+        for (E edge : edges) {
+            for (int i = 0; i < pq.size(); i++) {
+                if (CompKruskalEdge.isBiggerThan(pq.get(i), edge)) {
+                    pq.add(i, edge);
+                    break;
+                }
+            }
+        }
+
+        // Så länge pq, ej är tom && |cc| < n
+        while (!pq.isEmpty() && cc.size() < nodes.noOfNodes()) {
+            // hämta e = (from, to, weight) från kön
+            Edge e = pq.get(0);
+            pq.remove(0);
+            // om from och to inte refererar till samma lista i cc
+            int from = e.getSource();
+            int to = e.getDest();
+            if (!cc.get(from).equals(cc.get(to))) {
+                // flytta över alla elementen från den kortare listan till den andra och se till att alla berörda noder
+                // i cc refererar till den påfyllda listan
+                int small, big;
+                if (cc.get(from).size() > cc.get(to).size()) {
+                    big = from;
+                    small = to;
+                } else {
+                    big = to;
+                    small = from;
+                }
+                ArrayList<E> smallList = cc.get(small);
+                ArrayList<E> bigList = cc.get(big);
+
+                for (E edge : smallList) {
+                    bigList.add(edge);
+                }
+
+                cc.set(small, bigList);
+
+                // lägg slutligen e i den påfyllda listan
+                bigList.add((E) e);
+            }
+        }
+
+        // Resultatet dvs det sökta MST finns i den enda kvarvarande listan i cc.
+		return cc.get(0).iterator();
 	}
 
 }
