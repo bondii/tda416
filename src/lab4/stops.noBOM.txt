@@ -59,7 +59,7 @@ KrokslättsTorg	260	370
 Kungsportsplatsen	170	200
 Kungssten	30	380
 Kviberg	250	90
-Kålltorp	280	280
+Kålltorp	281	280
 Käringberget	30	420
 Lackarebäck	260	405
 Lana	260	350
@@ -112,7 +112,7 @@ Sälöfjordsgatan	40	70
 Teleskopgatan	285	20
 Temperaturgatan	0	10
 Tingvallsvägen	290	170
-Torp	280	280
+Torp	279	280
 Töpelsgatan	280	300
 UlleviNorra	215	190
 UlleviSödra	210	220
