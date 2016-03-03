@@ -1,5 +1,3 @@
-package lab4;
-
 /**
 * A minimal object for edges in a directed graph (here of type DirectedGraph).
 * Note that the weight is given by an abstract method, since it can be more 

@@ -1,72 +1,64 @@
-package lab4;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class DirectedGraph<E extends Edge> {
 
     // We have changed the x-coordinate for Kålltorp and Torp from 280 to 281, 279 so it won't look like a cycle
 
-    private NodeTable nodes;
+    //private NodeTable nodes;
     private ArrayList<E> edges;
 
-	public DirectedGraph(int noOfNodes) {
-		nodes = new NodeTable(noOfNodes);
-        edges = new ArrayList<E>();
-	}
+    public DirectedGraph(int noOfNodes) {
+        //nodes = new NodeTable(noOfNodes);
+        edges = new ArrayList<E>(noOfNodes);
+    }
 
-	public void addEdge(E e) {
-		if (!edges.contains(e)) {
+    public void addEdge(E e) {
+        if (!edges.contains(e)) {
             edges.add(e);
         }
-	}
+    }
 
-	public Iterator<E> shortestPath(int from, int to) {
-        ArrayList<NodeObject> visited = new ArrayList<NodeObject>();
-        ArrayList<QueueElement> queue = new ArrayList<QueueElement>();
+    public Iterator<E> shortestPath(int from, int to) {
+        ArrayList<Integer> visited = new ArrayList<Integer>();
+        PriorityQueue<QueueElement> priorityQueue = new PriorityQueue<QueueElement>(new CompDijkstraPath());
+        //ArrayList<QueueElement> queue = new ArrayList<QueueElement>();
 
-        NodeObject goalNode = nodes.find(to);
+        //NodeObject goalNode = nodes.find(to);
 
-        queue.add(new QueueElement(nodes.find(from), 0.0, new LinkedList<E>()));    //lägg (startnod, 0, tom väg) i en p-kö
-        while (!queue.isEmpty()) {      //while kön inte är tom
-            QueueElement temp = queue.get(0); //(nod, cost, path) = första elementet i p-kön
-            final NodeObject node = temp.getNode();
-            double cost = temp.getWeight();
-            final LinkedList<E> path = temp.getPath();
-
+        priorityQueue.add(new QueueElement(from, 0.0, new LinkedList<E>())); //lägg (startnod, 0, tom väg) i en p-kö
+        while (!priorityQueue.isEmpty()) {      //while kön inte är tom
+            QueueElement temp = priorityQueue.poll(); //(nod, cost, path) = första elementet i p-kön
+            final int node = temp.getNode();
             if (!visited.contains(node)) {      //if nod ej är besökt
-                if (node.equals(goalNode)) {        //if nod är slutpunkt
-                    return path.iterator();
+                if (node == to) {        //if nod är slutpunkt
+                    LinkedList<E> tempPath = temp.getPath();
+                    tempPath.add(edges.get(node));
+                    System.out.println("Nod " + node + " är lika med " + to);
+                    return tempPath.iterator(); // returnera path
                 } //else
                 //markera nod besökt
                 visited.add(node);
                 //for every v on EL(nod)
-                for (E edge : edges) {
-                    if (edge.getSource()==from) {
-                        NodeObject destNode = nodes.find(edge.getDest());
-                        //if v ej är besökt
-                        if (!visited.contains(destNode)) {
+                for (E v : edges) {
+                    //if v ej är besökt
+                    if (v.getSource()==node && !visited.contains(v.getDest())) {
+
                             //lägg in nytt köelement för v i p-kön
                             LinkedList<E> newPath = (LinkedList<E>) temp.getPath().clone();
-                            newPath.add(edge);
+                            newPath.add(v);
 
-                            double weight = temp.getWeight()+edge.getWeight();
-                            for (int i = 0; i < queue.size(); i++) {
-                                if (weight <= queue.get(i).getWeight()) {
-                                    queue.add(new QueueElement(destNode, weight, newPath));
-                                    break;
-                                }
-                            }
-                        }
+                            double weight = temp.getWeight()+v.getWeight();
+                            priorityQueue.add(new QueueElement(to, weight, newPath));
                     }
                 }
-
-                queue.remove(temp);
-
             }
         }
 
-		return null; //path not found
-	}
+        return null; //path not found
+    }
 
     public Edge getEdge(NodeObject from, NodeObject to) {
         int fromIndex = edges.indexOf(from);
@@ -79,28 +71,21 @@ public class DirectedGraph<E extends Edge> {
 
         return null;
     }
-		
-	public Iterator<E> minimumSpanningTree() {
+
+    public Iterator<E> minimumSpanningTree() {
         // Skapa ett fält cc som för varje nod innehåller en egen tom lista (som skall innehålla bågar så småningom)
         // (dvs varje nod är i en egen komponent)
         ArrayList<ArrayList<E>> cc = new ArrayList<ArrayList<E>>();
 
         // Lägg in alla bågar i en prioritetskö
-        ArrayList<E> pq = new ArrayList<E>();
-        for (E edge : edges) {
-            for (int i = 0; i < pq.size(); i++) {
-                if (CompKruskalEdge.isBiggerThan(pq.get(i), edge)) {
-                    pq.add(i, edge);
-                    break;
-                }
-            }
-        }
+        PriorityQueue<Edge> pq = new PriorityQueue<Edge>(edges.size(), new CompKruskalEdge());
+        pq.addAll(edges);
 
         // Så länge pq, ej är tom && |cc| < n
-        while (!pq.isEmpty() && cc.size() < nodes.noOfNodes()) {
+        while (!pq.isEmpty() && cc.size() < edges.size()) {
             // hämta e = (from, to, weight) från kön
-            Edge e = pq.get(0);
-            pq.remove(0);
+            Edge e = pq.poll();
+
             // om from och to inte refererar till samma lista i cc
             int from = e.getSource();
             int to = e.getDest();
@@ -130,8 +115,7 @@ public class DirectedGraph<E extends Edge> {
         }
 
         // Resultatet dvs det sökta MST finns i den enda kvarvarande listan i cc.
-		return cc.get(0).iterator();
-	}
+        return cc.get(0).iterator();
+    }
 
 }
-  

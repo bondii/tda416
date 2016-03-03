@@ -1,5 +1,3 @@
-package lab4;
-
 /**
 * A node object is used in the NodeTable class to map between 
 * nod number and node name.

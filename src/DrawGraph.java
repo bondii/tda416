@@ -13,70 +13,40 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/*
-DrawGraph har används till många uppgifter och skrivs om lite varje gång
-utan att jag tar tag i helheten, det är en samling fixar med andra ord....
-*/
 /**
 * A class for drawing a graph.
 * ( it's really only drawing text and lines and have no idea what it is drawing)
-* Original map drawing is thanks to Tommi Kerola and Marcus Johansson IT students 2010
-* But not much is left of their code
-* @author rewritten 2011 by Jesper Lloyd IT
-* @author rewritten by Erland Holmström 2011-2015
-* @author rewritten by Fredrik Lindblad 2016
+* @author Original map drawing is thanks to Tommi Kerola and Marcus Johansson IT students 2010
+* @author lots of changes by Erland Holmström 2010
+* @author rewritten 2011 by Jesper Lloyd (two layers)
+* @TODO måste kunna rita riktade grafer
+* "version 2012-02
 */
 public class DrawGraph extends JFrame {
 	
 	private GraphLayer base;
-	private GraphLayer overlay1;
-	private GraphLayer overlay2;
-	private int windowWidth = 500;
-	private int windowHeight = 500; 
-	private int scalex = 1;
-	private int scaley = 1;
-	private int pointNbr = 0;
-		
-	public enum Layer{BASE, OVERLAY1, OVERLAY2};
+	private GraphLayer overlay;
+	
+	public enum Layer{BASE, OVERLAY};
 	
 	public DrawGraph() {
-		this(500, 500); 
+		this(1300, 750); // passar bra för vårt linjenät
 	}
 	
 	public DrawGraph(int width, int height) {
-		if ( Math.abs(windowWidth - width) < 100 ) {
-			windowWidth = width;
-		} else {
-			scalex = windowWidth/width;
-		}
-		if ( Math.abs(windowHeight - height) < 100 ) { 
-			windowHeight = height;
-		} else {
-			scaley = windowHeight/height;
-		}
-			
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocation(50, 500); // flyttas	
-		Dimension windSize = new Dimension(windowWidth, windowHeight);
+		Dimension windSize = new Dimension(width, height);
 		setPreferredSize(windSize);
-		
 		base = new GraphLayer();
 		base.setSize(windSize);
 		base.setLayout(null);
 		
-		overlay1 = new GraphLayer();
-		overlay1.setOpaque(false);
-		overlay1.setSize(windSize);
-		overlay1.setLayout(null);
-
-		overlay2 = new GraphLayer();
-		overlay2.setOpaque(false);
-		overlay2.setSize(windSize);
-		overlay2.setLayout(null);
+		overlay = new GraphLayer();
+		overlay.setOpaque(false);
+		overlay.setSize(windSize);
+		overlay.setLayout(null);
 		
 		getContentPane().add(base);
-		base.add(overlay1);
-		base.add(overlay2);
+		base.add(overlay);
 		pack();
 		setVisible(true);
 	}
@@ -88,66 +58,38 @@ public class DrawGraph extends JFrame {
 		newLabel.setSize(150, 18);
 		newLabel.setLocation(x, y);
 		newLabel.setFont(newLabel.getFont().deriveFont(8));//.deriveFont(Font.BOLD));
-		switch (l) {
-		 case BASE:
-  			base.add(newLabel);
-  			break;
-  	case OVERLAY1:
-  			overlay1.add(newLabel);
-  			break;
-  	case OVERLAY2:
-  			overlay2.add(newLabel);
-  			break;
-		}
+		base.add(newLabel);
+		base.shapes.add(new CWEllipse2D(x - 11, y + 8, 3, 3, 2, Color.BLACK));
 	}
 	
 	public void drawLine(int x1, int y1, int x2, int y2, Color color, double width, Layer l) {
-		int x11 = scaleX(x1);
-		int y11 = scaleY(y1);
-		int x22 = scaleX(x2);
-		int y22 = scaleY(y2);
-		int shift = l == Layer.OVERLAY2 ? 1 : 0;
-		CWLine2D line = new CWLine2D(x11 + shift, y11 + shift, x22 + shift, y22 + shift, width, color);
-		if(l == Layer.BASE) {
-			//base.shapes.add(0,line); //Make sure lines are not drawn over stops
-			base.shapes.add(line);
-			base.shapes.add(new CWEllipse2D(x11-1, y11-2, 6, 6, width, color));
-			base.shapes.add(new CWEllipse2D(x22-1, y22-2, 6, 6, width, color));
-			drawString(""+x1+","+y1, x1, y1, l); 
-			drawString(""+x2+","+y2, x2, y2, l);
-		} else {
-		 switch (l) {
-		  case OVERLAY1:
-  			overlay1.shapes.add(line);
-  		 break;
-  		case OVERLAY2:
-  		 overlay2.shapes.add(line);
-  		 break;
-  	}
-			//overlay.shapes.add(new CWEllipse2D(x11-1, y11-2, 3, 3, width, color));
+		x1 = scaleX(x1);
+		y1 = scaleY(y1);
+		x2 = scaleX(x2);
+		y2 = scaleY(y2);
+		CWLine2D line = new CWLine2D(x1, y1, x2, y2, width, color);
+		
+		if(l == Layer.BASE)
+			base.shapes.add(0,line); //Make sure lines are not drawn over stops
+		else{
+			overlay.shapes.add(line);
+			overlay.shapes.add(new CWEllipse2D(x1-1, y1-2, 3, 3, width, color));
 		}	
 	}
 	
 	public void clearLayer(Layer l){
-		switch (l) {
-		 case BASE:
-  			base.shapes.clear();
-  			break;
-  	case OVERLAY1:
-  			overlay1.shapes.clear();
-  			break;
-  	case OVERLAY2:
-  			overlay2.shapes.clear();
-  			break;
-		}
+		if(l == Layer.BASE)
+			base.shapes.clear(); //Never used in program
+		else
+			overlay.shapes.clear();
 	}
 	
 	private int scaleX(int x) {
-		return (x*scalex);
+		return (int)(x*4)+10;
 	}
 	
 	private int scaleY(int y) {
-		return (y*scaley);
+		return (int)(y*1.5) + 11;
 	}
 	
 	//Fixing repainting of paths and nodes.
@@ -157,8 +99,8 @@ public class DrawGraph extends JFrame {
 		
 		@Override
 		protected void paintComponent(Graphics g){
-			Graphics2D g2 = (Graphics2D)g;
-			for(SpecShape s: this.shapes) {
+			for(SpecShape s: this.shapes){
+				Graphics2D g2 = (Graphics2D)g;
 				g2.setColor(s.getColor());
 				g2.setStroke(new BasicStroke((float)s.getWidth()));
 				g2.draw(s);

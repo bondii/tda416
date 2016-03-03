@@ -1,7 +1,3 @@
-package lab4;
-
-import lab4.NodeObject;
-
 import java.util.*;
 import java.text.Collator;
 /*
