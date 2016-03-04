@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -25,14 +24,6 @@ public class QueueElement<E extends Edge> implements Comparable {
 
     public double getWeight() {
         return cost;
-
-        /*
-        double weight = 0;
-        for (Edge edge : path) {
-            weight += edge.getWeight();
-        }
-        return weight;
-         */
     }
 
     @Override
