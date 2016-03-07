@@ -1,30 +1,19 @@
 import java.util.Comparator;
-import java.util.LinkedList;
 
 /**
  * Created by Bondi on 2016-02-25.
  */
-public class CompDijkstraPath implements Comparator<LinkedList<Edge>> {
-
+public class CompDijkstraPath implements Comparator<QueueElement> {
     @Override
-    public int compare(LinkedList<Edge> o1, LinkedList<Edge> o2) {
-        double weightOne = 0;
-        double weightTwo = 0;
+    public int compare(QueueElement o1, QueueElement o2) {
+        double temp = o1.getWeight() - o2.getWeight();
 
-        for (Edge edge : o1) {
-            weightOne += edge.getWeight();
+        if (temp > 0) {
+            return 1;
+        } else if ( temp < 0) {
+            return -1;
+        } else {
+            return 0;
         }
-
-        for (Edge edge : o2) {
-            weightTwo += edge.getWeight();
-        }
-        double sum = weightOne-weightTwo;
-
-        if (sum != 0) {
-            return sum > 0 ? 1 : -1;
-        }
-
-        return 0;
     }
-
 }

@@ -18,7 +18,7 @@ public class DirectedGraph<E extends Edge> {
 
     public Iterator<E> shortestPath(int from, int to) {
         boolean[] visited = new boolean[noOfNodes];
-        PriorityQueue<QueueElement> priorityQueue = new PriorityQueue<QueueElement>();
+        PriorityQueue<QueueElement> priorityQueue = new PriorityQueue<QueueElement>(noOfNodes, new CompDijkstraPath());
 
         priorityQueue.add(new QueueElement(from, 0.0, new LinkedList<E>())); //lägg (startnod, 0, tom väg) i en p-kö
         while (!priorityQueue.isEmpty()) {      //while kön inte är tom

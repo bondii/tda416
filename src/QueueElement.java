@@ -3,7 +3,7 @@ import java.util.LinkedList;
 /**
  * Created by Bondi on 2016-02-29.
  */
-public class QueueElement<E extends Edge> implements Comparable {
+public class QueueElement<E extends Edge> {
     int node;
     Double cost;
     LinkedList<E> path;
@@ -24,18 +24,5 @@ public class QueueElement<E extends Edge> implements Comparable {
 
     public double getWeight() {
         return cost;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        double temp = this.cost - ((QueueElement) o).getWeight();
-
-        if (temp > 0) {
-            return 1;
-        } else if ( temp < 0) {
-            return -1;
-        } else {
-            return 0;
-        }
     }
 }
