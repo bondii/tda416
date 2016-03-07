@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class DirectedGraph<E extends Edge> {
     private ArrayList<ArrayList<E>> edges;
@@ -16,14 +13,12 @@ public class DirectedGraph<E extends Edge> {
     }
 
     public void addEdge(E e) {
-        if (!edges.get(e.getSource()).contains(e)) {
-            edges.get(e.getSource()).add(e);
-        }
+        edges.get(e.getSource()).add(e);
     }
 
     public Iterator<E> shortestPath(int from, int to) {
         boolean[] visited = new boolean[noOfNodes];
-        PriorityQueue<QueueElement> priorityQueue = new PriorityQueue<QueueElement>(new CompDijkstraPath());
+        PriorityQueue<QueueElement> priorityQueue = new PriorityQueue<QueueElement>();
 
         priorityQueue.add(new QueueElement(from, 0.0, new LinkedList<E>())); //lägg (startnod, 0, tom väg) i en p-kö
         while (!priorityQueue.isEmpty()) {      //while kön inte är tom
